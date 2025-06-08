@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/send-email.js": {
+      "source": "email-backend/api/send-email.js"
+    }
+  }
+}
