@@ -11,27 +11,30 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing parameters' });
   }
 
+  // Configura il trasportatore SMTP (es. Gmail, Mailtrap, o altro)
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,     // es. smtp.gmail.com
+    port: Number(process.env.SMTP_PORT) || 587,
+    secure: false,                   // true per 465, false per altri port
+    auth: {
+      user: process.env.SMTP_USER,  // tua email o user SMTP
+      pass: process.env.SMTP_PASS,  // password SMTP o app password
+    },
+  });
+
+  const mailOptions = {
+    from: `"Cucina di Nonna" <${process.env.SMTP_USER}>`,
+    to: email, // manda all’utente che ha ordinato
+    subject: `Conferma ordine per ${username}`,
+    text: `Ciao ${username},\n\nGrazie per il tuo ordine:\n\n${orderDetails}\n\nA presto!`,
+  };
+
   try {
-    // Configura il trasportatore SMTP (usa un account Gmail con password app specifica)
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS,
-      }
-    });
-
-    const mailOptions = {
-      from: process.env.GMAIL_USER,
-      to: email,
-      subject: 'Conferma ordine Cucina di Nonna',
-      text: `Ciao ${username},\n\nGrazie per il tuo ordine:\n${orderDetails}\n\nA presto!`
-    };
-
     await transporter.sendMail(mailOptions);
-
     res.status(200).json({ message: 'Email inviata con successo' });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Errore invio email:', error);
+    res.status(500).json({ error: 'Errore invio email' });
   }
 }
+
