@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+AILimport nodemailer from 'nodemailer';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -17,8 +17,8 @@ export default async function handler(req, res) {
     port: Number(process.env.SMTP_PORT) || 587,
     secure: false,                   // true per 465, false per altri port
     auth: {
-      user: process.env.SMTP_USER,  // tua email o user SMTP
-      pass: process.env.SMTP_PASS,  // password SMTP o app password
+      user: process.env.EMAIL,  // tua email o user SMTP
+      pass: process.env.PASSWORD,  // password SMTP o app password
     },
   });
 
